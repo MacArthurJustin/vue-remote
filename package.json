@@ -1,0 +1,32 @@
+{
+  "name": "vue-remote",
+  "version": "1.0.0",
+  "description": "A websocket based remote event system for Vue.js 2.0",
+  "dependencies": {
+    "websocket": "^1.0.24"
+  },
+  "devDependencies": {
+    "vue": "^2.0.0"
+  },
+  "main": "client.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MacArthurJustin/vue-remote.git"
+  },
+  "keywords": [
+    "event",
+    "vuejs",
+    "websocket",
+    "socket"
+  ],
+  "author": "Justin MacArthur <macarthurjustin@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MacArthurJustin/vue-remote/issues"
+  },
+  "homepage": "https://github.com/MacArthurJustin/vue-remote#readme"
+}
