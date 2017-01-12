@@ -1,4 +1,4 @@
-# vue-events
+# vue-remote
 
 A websocket based remote event system for [Vue.js](http://vuejs.org).
 
