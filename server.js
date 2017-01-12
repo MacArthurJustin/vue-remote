@@ -18,12 +18,11 @@ const WebSocket = require('websocket');
  * @param {connection} connection
  * @returns {Function} Message Handling Function for the Server
  */
-function defaultHandler(connection) {
-    return function(message) {
-        console.log(connection);
-        console.log(message);
-
-        connection.send(message);
+function defaultHandler(message) {
+    console.log(message);
+    return {
+        identifier: message.identifier,
+        data: "Handled Message"
     };
 }
 
@@ -88,7 +87,12 @@ module.exports = function(messageHandler, options) {
 
             connection.on(
                 'message',
-                handler(connection)
+                function(message) {
+                    let Json = Json.parse(message.data),
+                        value = handler(Json);
+
+                    connection.send(value);
+                }
             );
 
             connection.on(

@@ -88,6 +88,34 @@ There are 3 methods that register event listeners. They're functionally identica
 ...
 ```
 
+## server
+vue-remote comes with a basic websocket server script based on the [Websocket](https://www.npmjs.com/package/websocket) node package.
+
+#### Usage
+```
+// testServer.js
+
+const Server = require('vue-remote/server');
+
+function messageHandler(message) {
+    // message = {
+    //    identifier: "trigger",
+    //    arguments: [...]
+    // }
+
+    ... Handle Message object
+
+    return {
+        identifier: "trigger",
+        data: "Handled Message"
+    };
+}
+
+let socketServer = Server( messageHandler, [options]);
+```
+
+use `node testServer.js` to fun the server.
+
 ## License
 
 [MIT](http://opensource.org/licenses/MIT)
