@@ -88,7 +88,7 @@ module.exports = function(messageHandler, options) {
             connection.on(
                 'message',
                 function(message) {
-                    let Json = Json.parse(message.data),
+                    let Json = JSON.parse(message.data),
                         value = handler(Json);
 
                     connection.send(value);
