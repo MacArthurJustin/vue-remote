@@ -2,7 +2,7 @@
 
 A websocket based remote event system for [Vue.js](http://vuejs.org).
 
-Works with `Vue 2.0`.
+Works with `Vue 2.0`, untested with `Vue 1.0`.
 
 ## Installation
 
