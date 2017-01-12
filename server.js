@@ -88,10 +88,11 @@ module.exports = function(messageHandler, options) {
             connection.on(
                 'message',
                 function(message) {
-                    let Json = JSON.parse(message.data),
+                    console.log(message);
+                    let Json = JSON.parse(message.utf8Data),
                         value = handler(Json);
 
-                    connection.send(value);
+                    connection.send(JSON.stringify(value));
                 }
             );
 

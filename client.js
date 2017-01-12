@@ -142,10 +142,12 @@ module.exports.install = function(Vue, options) {
          * @returns
          */
         function emitHandler(identifier) {
+            let args = arguments.length > 1 ? [].slice.apply(arguments, [1]) : [];
+
             socketPump.push(
                 JSON.stringify({
                     'identifier': identifier,
-                    'arguments': [].slice.apply(arguments, [1])
+                    'arguments': args
                 })
             );
         }
