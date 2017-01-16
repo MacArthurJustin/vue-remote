@@ -202,6 +202,17 @@ module.exports.install = function(Vue, options) {
                     }
                 }
             }
+        },
+        beforeDestroy: function() {
+            if (this.$options.remote) 
+            {
+                let Handlers = this.$options.remote;
+                for (let name in Handlers) {
+                    if (Handlers.hasOwnProperty(name) && typeof Handlers[name] === "function") {
+                        Vue.Remote.detach(name, Handlers[name]);
+                    }
+                }
+            }
         }
     });
 
