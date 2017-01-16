@@ -31,7 +31,7 @@ or
 
 ```
 window.Vue = require('vue');
-const VueRemote = require('vue-events');
+const VueRemote = require('vue-remote');
 
 Vue.use(
     VueRemote,
@@ -70,6 +70,36 @@ There are 2 methods that fire events. They're functionally identical and only di
 ...
 ```
 
+The structure used by `vue-remote` is as follows
+```
+// One Argument
+// Vue.Remote.emit('trigger', 5)
+{
+    "identifier": 'trigger',
+    "arguments": 5
+}
+
+// One Argument which is an object
+// Vue.Remote.emit('trigger', { 'data': 5, 'id': 10 })
+{
+    "identifier": 'trigger',
+    "data": 5,
+    "id": 10
+}
+
+// Two or more Arguments
+// Vue.Remote.emit('trigger', 5, 10, 15)
+{
+    "identifier": 'trigger',
+    "arguments": [
+        5,
+        10,
+        15
+    ]
+}
+
+```
+
 #### Listening for an event
 There are 3 methods that register event listeners. They're functionally identical and only differ in name.
 ```
@@ -86,6 +116,23 @@ There are 3 methods that register event listeners. They're functionally identica
         }
     })
 ...
+```
+
+The structure expected by the client is as follows.
+```
+{
+    "identifier": <identifier>,
+    "data": <value to send into the function handler>
+}
+
+// example
+{
+    "identifier": 'trigger',
+    "data": {
+        "id": 10,
+        "foo": "bar"
+    }
+}
 ```
 
 ## server
@@ -114,7 +161,7 @@ function messageHandler(message) {
 let socketServer = Server( messageHandler, [options]);
 ```
 
-use `node testServer.js` to fun the server.
+use `node testServer.js` to run the server.
 
 ## License
 

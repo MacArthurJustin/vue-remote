@@ -6,7 +6,7 @@
  *
  * @module vue-remote/server
  * @author Justin MacArthur <macarthurjustin@gmail.com>
- * @version 1.0.0
+ * @version 1.0.4
  */
 
 const http = require('http');
