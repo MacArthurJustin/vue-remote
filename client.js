@@ -20,7 +20,7 @@ module.exports.install = function(Vue, options) {
         options.secure = options.secure || false
         options.host = options.host || "localhost"
         options.port = options.port || 8080
-
+        options.identifier = options.identifier || 'identifier'
         /**
          * Connect to Websocket Server
          */
@@ -65,12 +65,14 @@ module.exports.install = function(Vue, options) {
          */
         function messageHandler(message) {
             let Json = JSON.parse(message.data),
-                Events = Handlers[Json.identifier]
+                Events = Handlers[Json[options.identifier]]
 
             if (Events) {
                 Events.forEach(
                     (Event) => {
-                        Event.callback.apply(Event.thisArg, [Json.data])
+                        //Event.callback.apply(Event.thisArg, [Json.data])
+                        //Adapt to all respone format
+                        Event.callback.apply(Event.thisArg, [Json])
                     }
                 )
             }
