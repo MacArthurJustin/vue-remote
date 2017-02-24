@@ -22,7 +22,8 @@ Vue.use(
     {
         secure: false,
         host: "localhost",
-        port: 8080
+        port: 8080,
+        identifier: 'identifier'
     }
 )
 ```
