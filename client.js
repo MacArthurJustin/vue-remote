@@ -22,6 +22,7 @@ module.exports.install = function(Vue, options) {
         options.port = options.port || 8080
         options.identifier = options.identifier || 'identifier'
         options.endpoint = options.endpoint || ''
+        options.camelCase = options.camelCase || true
 
         /**
          * Connect to Websocket Server
@@ -66,8 +67,12 @@ module.exports.install = function(Vue, options) {
          * @returns
          */
         function messageHandler(message) {
-            let Json = JSON.parse(message.data),
-                Events = Handlers[Json[options.identifier]]
+          let Json = JSON.parse(message.data),
+            identifier = options.camelCase ? Json[options.identifier].replace(
+              /-([a-z])/gi,
+              (s, group1) => group1.toUpperCase()
+            ) : options.identifier,
+            Events = Handlers[identifier]
 
             if (Events) {
                 Events.forEach(

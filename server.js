@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+'use strict'
 
 /**
  * Vue-Remote Server
@@ -14,94 +15,97 @@ const WebSocket = require('websocket');
 
 /**
  * Default System Handler that Echos Input
- * 
+ *
  * @param {connection} connection
  * @returns {Function} Message Handling Function for the Server
  */
 function defaultHandler(message) {
-    console.log(message);
-    return {
-        identifier: message.identifier,
-        data: "Handled Message"
-    };
+  console.log(message);
+  return {
+    identifier: message.identifier,
+    data: "Handled Message"
+  };
 }
 
 /**
- * 
- * 
+ *
+ *
  * @param {Function} messageHandler
  * @param {Object} [options]
  */
-module.exports = function(messageHandler, options) {
-    options = options || Object.create(null);
+module.exports = function(options) {
+  options = options || Object.create(null);
 
-    /**
-     * Default HTTP Server Handler
-     * Returns 404 to any nonWebserver requests
-     * 
-     * @param {request} request
-     * @param {response} response
-     */
-    let server = http.createServer(
-        function(request, response) {
-            response.writeHead(404);
-            response.end();
-        }
-    );
-
-    server.listen(
-        options.port || 8080,
-        function() {
-            console.log((new Date()) + ' Server is listening on port ' + (options.port || 8080));
-        }
-    );
-
-    let wsServer = new WebSocket.server({
-        httpServer: server,
-        autoAcceptConnections: false
-    });
-
-    /**
-     * Basic CORS test
-     * 
-     * @param {String} origin
-     * @returns
-     */
-    function originIsAllowed(origin) {
-        return typeof options.originIsAllowed === "function" ? options.originIsAllowed(origin) : true;
+  /**
+   * Default HTTP Server Handler
+   * Returns 404 to any nonWebserver requests
+   *
+   * @param {request} request
+   * @param {response} response
+   */
+  let server = http.createServer(
+    function(request, response) {
+      response.writeHead(404);
+      response.end();
     }
+  );
 
-    wsServer.on(
-        'request',
-        function(request) {
-            if (!originIsAllowed(request.origin)) {
-                request.reject();
-                console.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
-                return;
-            }
+  server.listen(
+    options.port || 8080,
+    function() {
+      console.log((new Date()) + ' Server is listening on port ' + (options.port || 8080));
+    }
+  );
 
-            console.log((new Date()) + ' Connection accepted.');
+  let wsServer = new WebSocket.server({
+    httpServer: server,
+    autoAcceptConnections: false
+  });
 
-            let connection = request.accept(undefined, request.origin),
-                handler = messageHandler || defaultHandler;
+  /**
+   * Basic CORS test
+   *
+   * @param {String} origin
+   * @returns
+   */
+  function originIsAllowed(origin) {
+    return typeof options.originIsAllowed === "function" ? options.originIsAllowed(origin) : true;
+  }
 
-            connection.on(
-                'message',
-                function(message) {
-                    console.log(message);
-                    let Json = JSON.parse(message.utf8Data),
-                        value = handler(Json);
+  wsServer.on(
+    'request',
+    function(request) {
+      if (!originIsAllowed(request.origin)) {
+        request.reject();
+        console.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
+        return;
+      }
 
-                    connection.send(JSON.stringify(value));
-                }
-            );
+      console.log((new Date()) + ' Connection accepted.');
 
-            connection.on(
-                'close',
-                function(reasonCode, description) {
-                    console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
-                }
-            );
+      let connection = request.accept(undefined, request.origin),
+        handler = options.messageHandler || defaultHandler;
+
+      if(options.connectHandler) options.connectHandler(connection)
+
+      connection.on(
+        'message',
+        function(message) {
+          console.log(message);
+          let Json = JSON.parse(message.utf8Data),
+            value = handler(Json, connection);
+
+          connection.send(JSON.stringify(value));
         }
-    );
+      );
+
+      connection.on(
+        'close',
+        function(reasonCode, description) {
+          if(options.disconnectHandler) options.disconnectHandler(connection)
+          console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
+        }
+      );
+    }
+  );
 };
