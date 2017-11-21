@@ -21,11 +21,13 @@ module.exports.install = function(Vue, options) {
         options.host = options.host || "localhost"
         options.port = options.port || 8080
         options.identifier = options.identifier || 'identifier'
+        options.endpoint = options.endpoint || ''
+
         /**
          * Connect to Websocket Server
          */
         function connect() {
-            Client = new WebSocket((options.secure ? "wss://" : "ws://") + options.host + ":" + options.port, options.protocol)
+            Client = new WebSocket(`${(options.secure ? 'wss://' : 'ws://')}${options.host}${options.port ? ':' + options.port : ''}/${options.endpoint}`, options.protocol)
 
             Client.onopen = openHandler
             Client.onerror = errorHandler
@@ -116,7 +118,7 @@ module.exports.install = function(Vue, options) {
          * @param {Function} callback   Function to be called when the trigger is tripped
          */
         function detachHandler(identifier, callback) {
-            if(arguments.length == 0) {
+            if(arguments.length === 0) {
                 Handlers = Object.create(null)
                 return
             }
@@ -124,7 +126,7 @@ module.exports.install = function(Vue, options) {
             let Handler = Handlers[identifier]
             if(!Handler) return
 
-            if(arguments.length == 1) {
+            if(arguments.length === 1) {
                 Handlers[identifier] = null
                 return
             }
@@ -170,10 +172,10 @@ module.exports.install = function(Vue, options) {
          * @returns
          */
         function pumpHandler() {
-            if (socketPump.length == 0) return
+            if (socketPump.length === 0) return
             if (!Client) connect()
 
-            if (Client.readyState == WebSocket.OPEN) {
+            if (Client.readyState === WebSocket.OPEN) {
                 socketPump.forEach(
                     (item) => Client.send(item)
                 )
