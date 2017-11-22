@@ -69,9 +69,9 @@ module.exports.install = function(Vue, options) {
         function messageHandler(message) {
           let Json = JSON.parse(message.data),
             identifier = options.camelCase ? Json[options.identifier].replace(
-              /-([a-z])/gi,
+              /-([A-Za-z0-9])/gi,
               (s, group1) => group1.toUpperCase()
-            ) : options.identifier,
+            ) : Json[options.identifier],
             Events = Handlers[identifier]
 
             if (Events) {
@@ -110,6 +110,11 @@ module.exports.install = function(Vue, options) {
          * @param {Object} [thisArg]    Arguement to be passed to the handler as `this`
          */
         function attachHandler(identifier, callback, thisArg) {
+            identifier = options.camelCase ? identifier.replace(
+              /-([A-Za-z0-9])/gi,
+              (s, group1) => group1.toUpperCase()
+            ) : identifier
+
             !(Handlers[identifier] || (Handlers[identifier] = [])).push({
                 callback: callback,
                 thisArg: thisArg
