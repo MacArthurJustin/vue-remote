@@ -164,6 +164,10 @@ let socketServer = Server( messageHandler, [options]);
 
 use `node testServer.js` to run the server.
 
+## Example
+
+[Vue-remote-chat](https://github.com/MacArthurJustin/vue-remote-chat) is a quick chat example of the system in action.
+
 ## License
 
 [MIT](http://opensource.org/licenses/MIT)
